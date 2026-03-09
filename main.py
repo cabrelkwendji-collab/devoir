@@ -6,7 +6,7 @@ Usage: python main.py [seed]
 """
 
 import sys
-from maze import generate_maze, print_maze, copy_maze, find_start_goal, WALL, START, GOAL
+from maze import generate_maze, print_maze, copy_maze, get_start_goal, WALL, START, GOAL
 from dfs import dfs, format_path as dfs_format_path
 from bfs import bfs, format_path as bfs_format_path
 from astar import astar, format_path as astar_format_path
