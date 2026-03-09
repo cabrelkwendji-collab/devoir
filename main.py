@@ -1,181 +1,153 @@
 """
-main.py - Point d'entrée principal du programme
+main.py - Point d'entrée principal du projet
 
-Ce fichier :
-1. Génère un labyrinthe 16x16
-2. Exécute les 3 algorithmes (DFS, BFS, A*)
-3. Affiche les résultats pour chaque algorithme
-4. Affiche un tableau comparatif final
+Usage: python main.py [seed]
+
 """
 
-from maze import (
-    generate_maze,
-    get_start_goal,
-    print_maze,
-    print_maze_with_explored,
-    print_maze_with_path,
-    print_path
-)
-from dfs import dfs
-from bfs import bfs
-from astar import astar
+import sys
+from maze import generate_maze, print_maze, copy_maze, find_start_goal, WALL, START, GOAL
+from dfs import dfs, format_path as dfs_format_path
+from bfs import bfs, format_path as bfs_format_path
+from astar import astar, format_path as astar_format_path
 
 
-def print_separator():
-    """Affiche une ligne de séparation."""
+def visualize_exploration(maze, explored, title="Exploration"):
+    """Affiche la visualisation de l'exploration."""
+    maze_viz = copy_maze(maze)
+    for pos in explored:
+        if maze_viz[pos[0]][pos[1]] not in [START, GOAL, WALL]:
+            maze_viz[pos[0]][pos[1]] = 'p'
+    print_maze(maze_viz, title)
+
+
+def visualize_solution(maze, path, title="Solution"):
+    """Affiche la visualisation de la solution."""
+    maze_viz = copy_maze(maze)
+    for pos in path:
+        if maze_viz[pos[0]][pos[1]] not in [START, GOAL]:
+            maze_viz[pos[0]][pos[1]] = '*'
+    print_maze(maze_viz, title)
+
+
+def print_comparison_table(results):
+    """Affiche le tableau comparatif."""
     print("\n" + "=" * 60)
+    print("TABLEAU COMPARATIF")
+    print("=" * 60)
+    print(f"{'Algorithme':<20} {'Noeuds':<12} {'Longueur':<12} {'Temps (ms)':<12}")
+    print("-" * 60)
+    
+    for algo_name, result in results.items():
+        nodes = result['nodes_explored']
+        length = result['path_length']
+        time_ms = result['exec_time'] * 1000
+        print(f"{algo_name:<20} {nodes:<12} {length:<12} {time_ms:<12.3f}")
+    
+    print("=" * 60)
 
 
-def print_results(name, maze, results, start, goal):
-    """
-    Affiche tous les résultats d'un algorithme.
-
-    Args:
-        name (str): Nom de l'algorithme.
-        maze (list[list[str]]): Le labyrinthe.
-        results (dict): Résultats de l'algorithme.
-        start (tuple): Position de départ.
-        goal (tuple): Position d'arrivée.
-    """
-    print_separator()
-    print(f"  ALGORITHME : {name}")
-    print_separator()
-
-    # Afficher l'exploration
-    print_maze_with_explored(maze, results['explored'], f"{name} - Exploration")
-
-    # Afficher la solution
-    print_maze_with_path(maze, results['path'], f"{name} - Solution")
-
-    # Afficher le chemin
-    print_path(results['path'], start, goal)
-
-    # Afficher les statistiques
-    print(f"\n--- Statistiques {name} ---")
-    print(f"Noeuds explorés  : {results['nodes_explored']}")
-    print(f"Longueur chemin  : {results['path_length']}")
-    print(f"Temps exécution  : {results['exec_time']:.3f} ms")
-
-
-def print_comparison_table(dfs_results, bfs_results, astar_results):
-    """
-    Affiche le tableau comparatif des 3 algorithmes.
-
-    Args:
-        dfs_results (dict): Résultats du DFS.
-        bfs_results (dict): Résultats du BFS.
-        astar_results (dict): Résultats du A*.
-    """
-    print_separator()
-    print("  TABLEAU COMPARATIF")
-    print_separator()
-
-    # En-tête du tableau
-    print(f"\n{'Algorithme':<20} {'Noeuds':<12} {'Longueur':<12} {'Temps (ms)':<12}")
-    print("-" * 56)
-
-    # Ligne DFS
-    print(f"{'DFS':<20} {dfs_results['nodes_explored']:<12} "
-          f"{dfs_results['path_length']:<12} "
-          f"{dfs_results['exec_time']:<12.3f}")
-
-    # Ligne BFS
-    print(f"{'BFS':<20} {bfs_results['nodes_explored']:<12} "
-          f"{bfs_results['path_length']:<12} "
-          f"{bfs_results['exec_time']:<12.3f}")
-
-    # Ligne A*
-    print(f"{'A* (manhattan)':<20} {astar_results['nodes_explored']:<12} "
-          f"{astar_results['path_length']:<12} "
-          f"{astar_results['exec_time']:<12.3f}")
-
-    print()
+def run_all_algorithms(maze, start, goal):
+    """Exécute les trois algorithmes."""
+    results = {}
+    
+    # DFS
+    print("\n" + "=" * 60)
+    print("ALGORITHME DFS (Depth-First Search)")
+    print("=" * 60)
+    result_dfs = dfs(maze, start, goal)
+    results['DFS'] = result_dfs
+    
+    if result_dfs['found']:
+        visualize_exploration(maze, result_dfs['explored'], "Exploration DFS (p = parcouru)")
+        visualize_solution(maze, result_dfs['path'], "Solution DFS (* = chemin)")
+        print(dfs_format_path(result_dfs['path'], start, goal))
+        print(f"\nStatistiques DFS:")
+        print(f"  - Nœuds explorés: {result_dfs['nodes_explored']}")
+        print(f"  - Longueur du chemin: {result_dfs['path_length']}")
+        print(f"  - Temps d'exécution: {result_dfs['exec_time']*1000:.3f} ms")
+    else:
+        print("Aucun chemin trouvé par DFS!")
+    
+    # BFS
+    print("\n" + "=" * 60)
+    print("ALGORITHME BFS (Breadth-First Search)")
+    print("=" * 60)
+    result_bfs = bfs(maze, start, goal)
+    results['BFS'] = result_bfs
+    
+    if result_bfs['found']:
+        visualize_exploration(maze, result_bfs['explored'], "Exploration BFS (p = parcouru)")
+        visualize_solution(maze, result_bfs['path'], "Solution BFS (* = chemin)")
+        print(bfs_format_path(result_bfs['path'], start, goal))
+        print(f"\nStatistiques BFS:")
+        print(f"  - Nœuds explorés: {result_bfs['nodes_explored']}")
+        print(f"  - Longueur du chemin: {result_bfs['path_length']} (optimal)")
+        print(f"  - Temps d'exécution: {result_bfs['exec_time']*1000:.3f} ms")
+    else:
+        print("Aucun chemin trouvé par BFS!")
+    
+    # A*
+    print("\n" + "=" * 60)
+    print("ALGORITHME A* (A-Star avec heuristique Manhattan)")
+    print("=" * 60)
+    result_astar = astar(maze, start, goal)
+    results['A* (manhattan)'] = result_astar
+    
+    if result_astar['found']:
+        visualize_exploration(maze, result_astar['explored'], "Exploration A* (p = parcouru)")
+        visualize_solution(maze, result_astar['path'], "Solution A* (* = chemin)")
+        print(astar_format_path(result_astar['path'], start, goal))
+        print(f"\nStatistiques A*:")
+        print(f"  - Nœuds explorés: {result_astar['nodes_explored']}")
+        print(f"  - Longueur du chemin: {result_astar['path_length']} (optimal)")
+        print(f"  - Temps d'exécution: {result_astar['exec_time']*1000:.3f} ms")
+    else:
+        print("Aucun chemin trouvé par A*!")
+    
+    return results
 
 
-def main():
-    """
-    Fonction principale du programme.
-    Génère le labyrinthe, exécute les 3 algorithmes et affiche les résultats.
-    """
-    # ============================================
-    # 1. GÉNÉRATION DU LABYRINTHE
-    # ============================================
-    print_separator()
-    print("  GÉNÉRATION DU LABYRINTHE")
-    print_separator()
-
-    # Tu peux changer la seed pour obtenir un labyrinthe différent
-    # Exemples : seed=42, seed=123, seed=2026
-    SEED = 42
-    SIZE = 16
-    WALL_DENSITY = 0.3
-
-    print(f"\nParamètres :")
-    print(f"  Taille       : {SIZE}x{SIZE}")
-    print(f"  Seed         : {SEED}")
-    print(f"  Densité murs : {WALL_DENSITY}")
-
-    maze = generate_maze(size=SIZE, seed=SEED, wall_density=WALL_DENSITY)
-    start, goal = get_start_goal(maze)
-
-    print(f"  Départ       : {start}")
-    print(f"  Arrivée      : {goal}")
-
-    # Afficher le labyrinthe original
-    print_maze(maze, "Labyrinthe original")
-
-    # ============================================
-    # 2. EXÉCUTION DES ALGORITHMES
-    # ============================================
-
-    # --- DFS ---
-    dfs_results = dfs(maze, start, goal)
-    print_results("DFS", maze, dfs_results, start, goal)
-
-    # --- BFS ---
-    bfs_results = bfs(maze, start, goal)
-    print_results("BFS", maze, bfs_results, start, goal)
-
-    # --- A* ---
-    astar_results = astar(maze, start, goal)
-    print_results("A* (Manhattan)", maze, astar_results, start, goal)
-
-    # ============================================
-    # 3. TABLEAU COMPARATIF
-    # ============================================
-    print_comparison_table(dfs_results, bfs_results, astar_results)
-
-    # ============================================
-    # 4. OBSERVATIONS
-    # ============================================
-    print_separator()
-    print("  OBSERVATIONS")
-    print_separator()
-
-    # Comparer les longueurs des chemins
-    print(f"\n• DFS a trouvé un chemin de longueur {dfs_results['path_length']}")
-    print(f"• BFS a trouvé un chemin de longueur {bfs_results['path_length']}")
-    print(f"• A*  a trouvé un chemin de longueur {astar_results['path_length']}")
-
-    if bfs_results['path_length'] == astar_results['path_length']:
-        print("\n✅ BFS et A* trouvent le même chemin optimal.")
-
-    if dfs_results['path_length'] > bfs_results['path_length']:
-        print("⚠️  DFS trouve un chemin plus long (non optimal).")
-    elif dfs_results['path_length'] == bfs_results['path_length']:
-        print("✅ DFS a aussi trouvé un chemin optimal dans ce cas.")
-
-    # Comparer les noeuds explorés
-    print(f"\n• DFS a exploré {dfs_results['nodes_explored']} noeuds")
-    print(f"• BFS a exploré {bfs_results['nodes_explored']} noeuds")
-    print(f"• A*  a exploré {astar_results['nodes_explored']} noeuds")
-
-    if astar_results['nodes_explored'] <= bfs_results['nodes_explored']:
-        print("\n✅ A* explore moins ou autant de noeuds que BFS grâce à l'heuristique.")
-
-    print()
+def main(seed=None):
+    """Fonction principale."""
+    print("=" * 60)
+    print("DEVOIR I - ALGORITHMES DE RECHERCHE DANS UN LABYRINTHE")
+    print("INF-5183 - Fondements de l'Intelligence Artificielle")
+    print("=" * 60)
+    
+    if seed is not None:
+        print(f"\nSeed utilisée: {seed}")
+    else:
+        import random
+        seed = random.randint(0, 999999)
+        print(f"\nSeed générée aléatoirement: {seed}")
+    
+    print("\n[1] Génération du labyrinthe 16x16...")
+    maze = generate_maze(size=16, seed=seed)
+    start, goal = find_start_goal(maze)
+    
+    print(f"    Point de départ S: {start}")
+    print(f"    Point d'arrivée G: {goal}")
+    print_maze(maze, "Labyrinthe généré")
+    
+    print("\n[2] Exécution des algorithmes de recherche...")
+    results = run_all_algorithms(maze, start, goal)
+    
+    print("\n[3] Comparaison des résultats")
+    print_comparison_table(results)
+    
+    print("\n" + "=" * 60)
+    print("FIN DE L'EXÉCUTION")
+    print("=" * 60)
 
 
-# --- Lancer le programme ---
 if __name__ == "__main__":
-    main()
+    seed = None
+    if len(sys.argv) > 1:
+        try:
+            seed = int(sys.argv[1])
+        except ValueError:
+            print(f"Erreur: '{sys.argv[1]}' n'est pas un entier valide")
+            sys.exit(1)
+    
+    main(seed)
