@@ -302,3 +302,21 @@ def get_start_goal(maze):
     return start, goal
 
 
+# --- Test rapide du module ---
+if __name__ == "__main__":
+    # Générer et afficher un labyrinthe avec une seed
+    maze = generate_maze(size=16, seed=42, wall_density=0.3)
+    print_maze(maze, "Labyrinthe 16x16 (seed=42)")
+
+    # Vérifier les positions S et G
+    start, goal = get_start_goal(maze)
+    print(f"Départ : {start}")
+    print(f"Arrivée : {goal}")
+
+    # Vérifier qu'un chemin existe
+    path_ok = _path_exists(maze, start, goal)
+    print(f"Chemin existant : {path_ok}")
+
+    # Afficher les voisins du départ
+    neighbors = get_neighbors(start, maze)
+    print(f"Voisins de {start} : {neighbors}")
