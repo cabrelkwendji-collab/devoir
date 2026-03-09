@@ -35,14 +35,15 @@ README.md # Ce fichier
 
   ### 1. Cloner le dépôt
 
-```bash
+   ```bash
   git clone https://github.com/cabrelkwendji-collab/Kwendji_rep/DevoirI.git
   cd Devoir-1-IA
+   ```
 
   ### 2. Exécuter le programme
-
+```bash
 python main.py
-
+```
 ## 6) Résultats
 Le programme affiche pour chaque algorithme :
 
