@@ -17,7 +17,7 @@ Ce projet implémente trois algorithmes de recherche pour résoudre un labyrinth
 
 ## 3) Structure du Projet
 
-Devoir-1-IA/
+devoir/
 maze.py # Génération et gestion du labyrinthe
 dfs.py # Implémentation de DFS
 bfs.py # Implémentation de BFS
@@ -37,7 +37,7 @@ README.md # Ce fichier
 
    ```bash
   git clone https://github.com/cabrelkwendji-collab/Kwendji_rep/DevoirI.git
-  cd Devoir-1-IA
+  cd devoir
    ```
 
   ### 2. Exécuter le programme
@@ -46,24 +46,25 @@ python main.py
 ```
 ## 6) Résultats
 Le programme affiche pour chaque algorithme :
-
+```bash
 Exploration : Visualisation des cases parcourues (marquées p)
 Solution : Visualisation du chemin trouvé (marqué *)
 Chemin : Liste des coordonnées du chemin
 Statistiques : Noeuds explorés, longueur du chemin, temps d'exécution
 Un tableau comparatif résume les performances des trois algorithmes.
-
+```
 Exemple de sortie
-text
 
+```bash
 Algorithme           Noeuds       Longueur     Temps (ms)
 --------------------------------------------------------
 DFS                  78           45           0.521
 BFS                  112          27           0.634
 A* (manhattan)       45           27           0.312
-
+```
 ## 7) Description des Algorithmes
 
+```bash
 DFS (Depth-First Search)
  Utilise une pile (LIFO)
  Explore en profondeur avant de revenir en arrière
@@ -81,19 +82,19 @@ A* (A-Star)
    h(n) : distance de Manhattan jusqu'au but
  Garantit le chemin le plus court
  Plus efficace que BFS grâce à l'heuristique
-
+```
 ## 8) Paramètres Modifiables
 
  Dans main.py, vous pouvez modifier :
-
+```bash
 Python
 
   SEED = 42            # Graine aléatoire (changer pour un autre labyrinthe)
   SIZE = 16            # Taille du labyrinthe
   WALL_DENSITY = 0.3   # Densité des murs (0.0 = vide, 1.0 = plein)
-
+```
 ## 9) Représentation du Labyrinthe
-
+```bash
 Symbole	Signification
  #	Mur (obstacle)
  .	Case libre
@@ -101,3 +102,4 @@ Symbole	Signification
  G	Point d'arrivée
  p	Case explorée
  *	Chemin 
+```
