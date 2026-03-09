@@ -300,7 +300,10 @@ def get_start_goal(maze):
             elif maze[i][j] == 'G':
                 goal = (i, j)
     return start, goal
-
+    
+def copy_maze(maze: List[List[str]]) -> List[List[str]]:
+    """Crée une copie profonde du labyrinthe."""
+    return [row[:] for row in maze]
 
 # --- Test rapide du module ---
 if __name__ == "__main__":
