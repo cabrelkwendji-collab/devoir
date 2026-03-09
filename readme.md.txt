@@ -17,7 +17,7 @@ Ce projet implémente trois algorithmes de recherche pour résoudre un labyrinth
 
 ## 3) Structure du Projet
 
-Devoir-1-IA/
+Devoir/
 maze.py # Génération et gestion du labyrinthe
 dfs.py # Implémentation de DFS
 bfs.py # Implémentation de BFS
@@ -35,13 +35,14 @@ README.md # Ce fichier
 
   ### 1. Cloner le dépôt
 
-```bash
+  ```bash
   git clone https://github.com/cabrelkwendji-collab/Kwendji_rep/DevoirI.git
   cd Devoir-1-IA
 
   ### 2. Exécuter le programme
 
-python main.py
+  python main.py
+  ``` 
 
 ## 6) Résultats
 Le programme affiche pour chaque algorithme :
