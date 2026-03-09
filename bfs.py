@@ -1,17 +1,19 @@
 """
-dfs.py - Implémentation de l'algorithme DFS (Depth-First Search)
+bfs.py - Implémentation de l'algorithme BFS (Breadth-First Search)
 
-Recherche en profondeur utilisant une pile (LIFO).
+Recherche en largeur utilisant une file (FIFO).
 Explore les voisins dans l'ordre : droite, bas, gauche, haut.
+BFS garantit le chemin le plus court dans un labyrinthe non pondéré.
 """
 
 import time
+from collections import deque
 from maze import get_neighbors
 
 
-def dfs(maze, start, goal):
+def bfs(maze, start, goal):
     """
-    Exécute l'algorithme DFS pour trouver un chemin de start à goal.
+    Exécute l'algorithme BFS pour trouver un chemin de start à goal.
 
     Args:
         maze (list[list[str]]): Le labyrinthe.
@@ -29,32 +31,27 @@ def dfs(maze, start, goal):
     # Démarrer le chronomètre
     start_time = time.perf_counter()
 
-    # Initialiser la pile (LIFO)
-    stack = [start]
+    # Initialiser la file (FIFO)
+    queue = deque([start])
 
     # Ensemble des noeuds déjà visités
-    visited = set()
+    visited = {start}
 
     # Dictionnaire pour reconstruire le chemin : enfant -> parent
     parent = {start: None}
 
-    # Ensemble de tous les noeuds explorés (pour la visualisation)
+    # Ensemble des noeuds explorés (pour la visualisation)
     explored = set()
 
     # Variable pour savoir si on a trouvé le but
     found = False
 
-    # --- Boucle principale du DFS ---
-    while stack:
-        # Dépiler le dernier élément (LIFO)
-        current = stack.pop()
+    # --- Boucle principale du BFS ---
+    while queue:
+        # Retirer le premier élément de la file (FIFO)
+        current = queue.popleft()
 
-        # Si ce noeud a déjà été visité, on l'ignore
-        if current in visited:
-            continue
-
-        # Marquer comme visité
-        visited.add(current)
+        # Marquer comme exploré
         explored.add(current)
 
         # Vérifier si on a atteint le but
@@ -65,16 +62,11 @@ def dfs(maze, start, goal):
         # Obtenir les voisins (droite, bas, gauche, haut)
         neighbors = get_neighbors(current, maze)
 
-        # IMPORTANT : on inverse l'ordre des voisins avant de les empiler
-        # Car la pile (LIFO) va dépiler le dernier ajouté en premier
-        # On veut explorer dans l'ordre : droite, bas, gauche, haut
-        # Donc on empile dans l'ordre inverse : haut, gauche, bas, droite
-        for neighbor in reversed(neighbors):
+        for neighbor in neighbors:
             if neighbor not in visited:
-                stack.append(neighbor)
-                # Enregistrer le parent seulement si pas encore connu
-                if neighbor not in parent:
-                    parent[neighbor] = current
+                visited.add(neighbor)
+                queue.append(neighbor)
+                parent[neighbor] = current
 
     # Arrêter le chronomètre
     end_time = time.perf_counter()
@@ -113,20 +105,20 @@ if __name__ == "__main__":
     # Afficher le labyrinthe original
     print_maze(maze, "Labyrinthe original")
 
-    # Exécuter DFS
-    results = dfs(maze, start, goal)
+    # Exécuter BFS
+    results = bfs(maze, start, goal)
 
     # Afficher l'exploration
-    print_maze_with_explored(maze, results['explored'], "DFS - Exploration")
+    print_maze_with_explored(maze, results['explored'], "BFS - Exploration")
 
     # Afficher la solution
-    print_maze_with_path(maze, results['path'], "DFS - Solution")
+    print_maze_with_path(maze, results['path'], "BFS - Solution")
 
     # Afficher le chemin
     print_path(results['path'], start, goal)
 
     # Afficher les statistiques
-    print(f"\n--- Statistiques DFS ---")
+    print(f"\n--- Statistiques BFS ---")
     print(f"Noeuds explorés : {results['nodes_explored']}")
     print(f"Longueur du chemin : {results['path_length']}")
     print(f"Temps d'exécution : {results['exec_time']:.3f} ms")
