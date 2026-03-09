@@ -11,6 +11,10 @@ Ce module fournit les fonctions nécessaires pour :
 import random
 from collections import deque
 
+WALL = '#'
+PATH = '.'
+START = 'S'
+GOAL = 'G'
 
 def generate_maze(size=16, seed=None, wall_density=0.3):
     """
