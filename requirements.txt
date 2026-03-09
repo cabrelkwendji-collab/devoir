@@ -1,0 +1,11 @@
+# requirements.txt
+# Dépendances du projet Devoir I - Algorithmes de Recherche dans un Labyrinthe
+#
+# Ce projet utilise uniquement des modules de la bibliothèque standard Python.
+# Aucune dépendance externe n'est requise.
+#
+# Modules standards utilisés :
+#   - random (génération aléatoire)
+#   - collections (deque pour BFS)
+#   - heapq (file de priorité pour A*)
+#   - time (mesure du temps d'exécution)
