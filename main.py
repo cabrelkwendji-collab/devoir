@@ -17,7 +17,7 @@ from maze import (
     print_path
 )
 from dfs import dfs
-import bfs as bfs_algo
+from bfs import bfs
 from astar import astar
 
 
