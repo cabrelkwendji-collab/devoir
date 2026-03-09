@@ -301,7 +301,7 @@ def get_start_goal(maze):
                 goal = (i, j)
     return start, goal
     
-def copy_maze(maze: List[List[str]]) -> List[List[str]]:
+def copy_maze(maze: list[list[str]]) -> list[list[str]]:
     """Crée une copie profonde du labyrinthe."""
     return [row[:] for row in maze]
 
