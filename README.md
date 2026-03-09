@@ -16,7 +16,7 @@ Ce projet implémente trois algorithmes de recherche pour résoudre un labyrinth
 - **A\*** (A-Star) — Recherche informée avec heuristique de Manhattan
 
 ## 3) Structure du Projet
-
+```bash
 devoir/
 maze.py # Génération et gestion du labyrinthe
 dfs.py # Implémentation de DFS
@@ -25,7 +25,7 @@ astar.py # Implémentation de A*
 main.py # Point d'entrée principal
 requirements.txt # Dépendances (bibliothèque standard uniquement)
 README.md # Ce fichier
-
+```
 ## 4)  Prérequis
 
 - Python 3.11 ou supérieur
@@ -36,7 +36,7 @@ README.md # Ce fichier
   ### 1. Cloner le dépôt
 
    ```bash
-  git clone https://github.com/cabrelkwendji-collab/Kwendji_rep/DevoirI.git
+  git clone https://github.com/cabrelkwendji-collab/devoir.git
   cd devoir
    ```
 
